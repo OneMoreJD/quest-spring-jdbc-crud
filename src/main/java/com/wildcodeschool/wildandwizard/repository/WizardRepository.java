@@ -9,24 +9,23 @@ import java.util.List;
 
 public class WizardRepository implements CrudDao<Wizard> {
 
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/spring_jdbc_quest?serverTimezone=GMT";
+    private final static String DB_URL = "jdbc:sqlserver://localhost\\sqlexpress;databaseName=spring_jdbc_quest";
     private final static String DB_USER = "h4rryp0tt3r";
     private final static String DB_PASSWORD = "Horcrux4life!";
 
     @Override
     public Wizard save(Wizard wizard) {
 
-		Connection connection = null;
-		PreparedStatement statement = null;
-		ResultSet generatedKeys = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet generatedKeys = null;
         try {
-            connection = DriverManager.getConnection(
-            		DB_URL, DB_USER, DB_PASSWORD
-            );
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            
             statement = connection.prepareStatement(
-            		"INSERT INTO wizard (first_name, last_name, birthday, birth_place, biography, is_muggle) VALUES (?, ?, ?, ?, ?, ?)",
-            		Statement.RETURN_GENERATED_KEYS
-            );
+                    "INSERT INTO wizard (first_name, last_name, birthday, birth_place, biography, is_muggle) VALUES (?, ?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            
             statement.setString(1, wizard.getFirstName());
             statement.setString(2, wizard.getLastName());
             statement.setDate(3, wizard.getBirthday());
@@ -49,27 +48,25 @@ public class WizardRepository implements CrudDao<Wizard> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-		} finally {
-			JdbcUtils.closeResultSet(generatedKeys);
-			JdbcUtils.closeStatement(statement);
-			JdbcUtils.closeConnection(connection);
-		}
+        } finally {
+            JdbcUtils.closeResultSet(generatedKeys);
+            JdbcUtils.closeStatement(statement);
+            JdbcUtils.closeConnection(connection);
+        }
         return null;
     }
 
     @Override
     public Wizard findById(Long id) {
 
-		Connection connection = null;
-		PreparedStatement statement = null;
-		ResultSet resultSet = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             connection = DriverManager.getConnection(
-                    DB_URL, DB_USER, DB_PASSWORD
-            );
+                    DB_URL, DB_USER, DB_PASSWORD);
             statement = connection.prepareStatement(
-                    "SELECT * FROM wizard WHERE id = ?;"
-            );
+                    "SELECT * FROM wizard WHERE id = ?;");
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
 
@@ -84,27 +81,25 @@ public class WizardRepository implements CrudDao<Wizard> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-		} finally {
-			JdbcUtils.closeResultSet(resultSet);
-			JdbcUtils.closeStatement(statement);
-			JdbcUtils.closeConnection(connection);
-		}
+        } finally {
+            JdbcUtils.closeResultSet(resultSet);
+            JdbcUtils.closeStatement(statement);
+            JdbcUtils.closeConnection(connection);
+        }
         return null;
     }
 
     @Override
     public List<Wizard> findAll() {
 
-		Connection connection = null;
-		PreparedStatement statement = null;
-		ResultSet resultSet = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             connection = DriverManager.getConnection(
-                    DB_URL, DB_USER, DB_PASSWORD
-            );
+                    DB_URL, DB_USER, DB_PASSWORD);
             statement = connection.prepareStatement(
-                    "SELECT * FROM wizard;"
-            );
+                    "SELECT * FROM wizard;");
             resultSet = statement.executeQuery();
 
             List<Wizard> wizards = new ArrayList<>();
@@ -122,25 +117,23 @@ public class WizardRepository implements CrudDao<Wizard> {
             return wizards;
         } catch (SQLException e) {
             e.printStackTrace();
-		} finally {
-			JdbcUtils.closeResultSet(resultSet);
-			JdbcUtils.closeStatement(statement);
-			JdbcUtils.closeConnection(connection);
-		}
+        } finally {
+            JdbcUtils.closeResultSet(resultSet);
+            JdbcUtils.closeStatement(statement);
+            JdbcUtils.closeConnection(connection);
+        }
         return null;
     }
 
     @Override
     public Wizard update(Wizard wizard) {
-		Connection connection = null;
-		PreparedStatement statement = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
             connection = DriverManager.getConnection(
-                    DB_URL, DB_USER, DB_PASSWORD
-            );
+                    DB_URL, DB_USER, DB_PASSWORD);
             statement = connection.prepareStatement(
-                    "UPDATE wizard SET first_name=?, last_name=?, birthday=?, birth_place=?, biography=?, is_muggle=? WHERE id=?"
-            );
+                    "UPDATE wizard SET first_name=?, last_name=?, birthday=?, birth_place=?, biography=?, is_muggle=? WHERE id=?");
             statement.setString(1, wizard.getFirstName());
             statement.setString(2, wizard.getLastName());
             statement.setDate(3, wizard.getBirthday());
@@ -155,25 +148,22 @@ public class WizardRepository implements CrudDao<Wizard> {
             return wizard;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            JdbcUtils.closeStatement(statement);
+            JdbcUtils.closeConnection(connection);
         }
-		finally {
-			JdbcUtils.closeStatement(statement);
-			JdbcUtils.closeConnection(connection);
-		}
         return null;
     }
 
     @Override
     public void deleteById(Long id) {
-		Connection connection = null;
-		PreparedStatement statement = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
             connection = DriverManager.getConnection(
-                    DB_URL, DB_USER, DB_PASSWORD
-            );
+                    DB_URL, DB_USER, DB_PASSWORD);
             statement = connection.prepareStatement(
-                    "DELETE FROM wizard WHERE id=?"
-            );
+                    "DELETE FROM wizard WHERE id=?");
             statement.setLong(1, id);
 
             if (statement.executeUpdate() != 1) {
@@ -181,10 +171,9 @@ public class WizardRepository implements CrudDao<Wizard> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            JdbcUtils.closeStatement(statement);
+            JdbcUtils.closeConnection(connection);
         }
-		finally {
-			JdbcUtils.closeStatement(statement);
-			JdbcUtils.closeConnection(connection);
-		}
     }
 }
